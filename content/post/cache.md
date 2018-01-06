@@ -19,3 +19,46 @@ HTTP缓存是一种保存资源副本并且在下次请求时直接使用的技�
 
 ## 代理缓存（共有）
 例如：CDN，它可以缓存一些热门的资源，就可以重用这些资源，为多人提供服务，就能减少网络阻塞。
+
+## 缓存控制
+HTTP／1.1定义的`Cache-Control`用来支持缓存，请求头和响应头痘支持这个属性，通过这个属性，可以控制缓存策略。
+
+### 禁止缓存
+不缓存如何客户端请求和服务端响应。
+
+```
+Cache-Control: no-store
+Cache-Control: no-cache, no-store, must-revalidate
+```
+
+### 强制缓存确认
+如下设置请求头，客户端每次发送请求是， 缓存都会把请求发送到服务器（请求可能回携带if-modified-since，if-none-match等HTTP头部），服务器会验证请求描述的缓存是否过期， 如果没有过期，就反悔304的状态，缓存就可以使用本地缓存副本。
+
+```
+Cache-Control: no-cache
+```
+
+### 公共缓存和私有缓存
+
+`public`指令表示该响应可以背任何中间人（例如缓存代理， CDN等）
+`private`指令表示该响应只能用于特定用户的私有缓存， 例如浏览器私有缓存
+
+```
+Cache-Control: public
+Cache-Control: private
+```
+
+### 缓存过期机制
+
+过期机制中， `max-age=<seconds>`最为重要，它表示资源能够被缓存（保持新鲜）的最大时间。
+
+```
+Cache-Control: max-age=300
+```
+
+### 缓存验证确认
+当使用了`must-revalidate`,就表示缓存在考虑一个陈旧的资源时，必须验证它的新鲜度，已过期的缓存将不能被使用。
+
+```
+Cache-Control: must-revalidate
+```
